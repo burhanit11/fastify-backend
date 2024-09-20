@@ -1,6 +1,11 @@
 const fastify = require("fastify")({ logger: true });
 const routes = require("./routes/routes.users");
 
+// Declare a route
+fastify.get("/", function (request, reply) {
+  reply.send({ hello: "world" });
+});
+
 // api
 fastify.register(routes);
 
