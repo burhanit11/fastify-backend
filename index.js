@@ -1,17 +1,16 @@
 const fastify = require("fastify")({ logger: true });
-const { excuteQuery } = require("./config/db");
+const routes = require("./routes/routes.users");
 
-// Declare a route
-fastify.get("/", function (request, reply) {
-  reply.send({ hello: "world" });
-});
+// api
+fastify.register(routes);
 
-// Run the server!
-fastify.listen({ port: 3000 }, function (err, address) {
+// Start the Fastify server
+fastify.listen({ port: 3000 }, (err, address) => {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-  console.log("Server is Running on PORT : 3000");
-  // Server is now listening on ${address}
+  fastify.log.info(`Server listening at ${address}`);
+
+  console.log("Server is Running on Post 3000!");
 });

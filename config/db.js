@@ -1,6 +1,5 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const config = require("./constant.json");
-
 const pool = mysql.createPool({
   connectionLimit: 5,
   host: config.DB_HOST,
@@ -12,26 +11,24 @@ const pool = mysql.createPool({
 
 pool.getConnection((err) => {
   if (err) {
-    console.log("Error is connecting to DB.", err.stack);
+    console.error("Error connecting to DB.", err.stack);
     process.exit(1);
   }
-  console.log("Connected To DB.");
+  console.log("Connected to DB.");
 });
 
-const excuteQuery = (qyery, arrayParams) => {
+// Execute SQL query with error handling and promise support
+const executeQuery = (query, arrayParams) => {
   return new Promise((resolve, reject) => {
-    try {
-      pool.query(qyery, arrayParams, (err, data) => {
-        if (err) {
-          console.log("Error excuting the query");
-          reject(err);
-        }
-        resolve(data);
-      });
-    } catch (error) {
-      reject(error);
-    }
+    pool.query(query, arrayParams, (err, data) => {
+      if (err) {
+        console.error("Error executing the query:", err);
+        reject(err); // Reject the promise on error
+      } else {
+        resolve(data); // Resolve the promise with query results
+      }
+    });
   });
 };
 
-module.exports = { excuteQuery };
+module.exports = { executeQuery };
